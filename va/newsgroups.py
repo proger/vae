@@ -4,6 +4,7 @@ import urllib.request
 from pathlib import Path
 
 import torch
+from torch.utils.data import TensorDataset
 
 
 def read_word_counts(file) -> torch.Tensor:
@@ -29,25 +30,23 @@ def unpack():
     return train_data, test_data
 
 
-def make_datasets(smooth: bool = True):
+def make_datasets(vocab_size: int = 10000, frequency_smoothing: bool = True):
     train_counts, test_counts = unpack()
     
-    global_word_counts = (train_counts>0).sum(dim=0)
-    vocabulary = torch.topk(global_word_counts, 10000).indices
+    vocabulary = torch.topk((train_counts>0).sum(dim=0), vocab_size).indices
     train_counts = train_counts[:, vocabulary]
     test_counts = test_counts[:, vocabulary]
 
-    if smooth:
+    if frequency_smoothing:
         word_counts = train_counts.sum(dim=0)
-        smoothing = 1/len(word_counts)
-        word_counts += smoothing
+        word_counts += 1/vocab_size
         frequencies = word_counts / word_counts.sum()
 
         train_counts += frequencies[None,:]
         test_counts += frequencies[None,:]
 
 
-    return torch.utils.data.TensorDataset(train_counts), torch.utils.data.TensorDataset(test_counts)
+    return TensorDataset(train_counts), TensorDataset(test_counts)
 
 
 if __name__ == '__main__':
