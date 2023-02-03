@@ -34,12 +34,12 @@ def make_datasets(vocab_size: int = 10000, frequency_smoothing: bool = True):
     train_counts, test_counts = unpack()
     
     vocabulary = torch.topk((train_counts>0).sum(dim=0), vocab_size).indices
-    train_counts = train_counts[:, vocabulary]
-    test_counts = test_counts[:, vocabulary]
+    train_counts = train_counts[:, vocabulary].float()
+    test_counts = test_counts[:, vocabulary].float()
 
     if frequency_smoothing:
-        word_counts = train_counts.sum(dim=0)
-        word_counts += 1/vocab_size
+        word_counts = train_counts.sum(dim=0).float()
+        word_counts += 1./vocab_size
         frequencies = word_counts / word_counts.sum()
 
         train_counts += frequencies[None,:]

@@ -44,13 +44,13 @@ def log_prob(x, logits): # KL?
     return numerator - denominator
 
 
-def entropy(z, z_logits):
-    true = z * (-log1p_exp(-z_logits))
-    false = (1 - z) * (-log1p_exp(z_logits))
+def entropy(code, code_logits):
+    true = code * (-log1p_exp(-code_logits))
+    false = (1 - code) * (-log1p_exp(code_logits))
     return true + false + math.log(2)
 
 
-class VAE(nn.Module):
+class SematicHasher(nn.Module):
     def __init__(
         self,
         vocab_size: int = 10000,
@@ -74,40 +74,39 @@ class VAE(nn.Module):
             nn.LogSoftmax(dim=1),
         )
         
-    def encode(self, counts):
-        z_logits = self.encoder(counts)
-        return z_logits
+    def forward(self, word_counts):
+        code_logits = self.encoder(word_counts)
+        return code_logits
 
-    def elbo(self, z, z_logits, counts):
-        logits = self.decoder(z)
-        return log_prob(counts, logits) + entropy(z, z_logits.detach()).sum(dim=1)
+    def elbo(self, code, code_logits, word_counts):
+        word_logits = self.decoder(code)
+        return log_prob(word_counts, word_logits) + entropy(code, code_logits.detach()).sum(dim=1)
 
-    def disarm_elbo(self, z_logits, counts):
-        """Estimates the ELBO with DisARM estimator. See:
+    def disarm_elbo(self, code_logits, word_counts):
+        """ELBO with gradient estimates using DisARM. See:
 
         Dong, Mnih & Tucker (2020): "DisARM: An Antithetic Gradient Estimator for Binary Latent Variables"
         """
-        # sample uniform noise
-        U = z_logits.new_empty(z_logits.size()).uniform_()
+        uniform = torch.rand_like(code_logits)
 
-        # ARM expansion
-        b1 = (U > torch.sigmoid(-z_logits)).type_as(z_logits)
-        b2 = (U < torch.sigmoid(z_logits)).type_as(z_logits)
-        f1 = self.elbo(b1, z_logits, counts)
-        f2 = self.elbo(b2, z_logits, counts)
+        # antithetic augmentation
+        left  = (uniform > torch.sigmoid(-code_logits)).type_as(code_logits)
+        right = (uniform < torch.sigmoid( code_logits)).type_as(code_logits)
+        left_loss  = self.elbo(left,  code_logits, word_counts)
+        right_loss = self.elbo(right, code_logits, word_counts)
 
-        # DisARM generator of grad in a, vector of batch size
-        ones, zeros = torch.ones_like(b2), torch.zeros_like(b2)
-        inner_term = (-1*ones).pow(b2) * torch.where(b1 != b2, ones, zeros) * z_logits.abs().sigmoid()
+        # DisARM variance reduction
+        ones, zeros = torch.ones_like(right), torch.zeros_like(right)
+        inner_term = torch.pow(-1*ones, right) * torch.where(left != right, ones, zeros) * torch.sigmoid(torch.abs(code_logits))
         # ARM goes like this:
-        # inner_term = 2*U - 1
+        # inner_term = 2*uniform - 1
 
-        # estimates gradient through Bernoulli
-        grad_obj = 0.5 * (f1 - f2).detach() * ((inner_term * z_logits).flatten(start_dim=1).sum(dim=1, keepdim=False))
+        # gradient estimate
+        grad_obj = 0.5 * (left_loss - right_loss).detach() * ((inner_term * code_logits).flatten(start_dim=1).sum(dim=1, keepdim=False))
         
-        # estimate the loss value and can be differentiated in other parameters
-        loss_value = (f1 + f2) / 2
-        return loss_value + (grad_obj - grad_obj.detach())
+        # loss estimate
+        avg_loss = 0.5 * (left_loss + right_loss)
+        return avg_loss + (grad_obj - grad_obj.detach())
 
     def make_optimizer(self, lr=1e-3):
         return torch.optim.Adam(self.parameters(), lr=lr)
