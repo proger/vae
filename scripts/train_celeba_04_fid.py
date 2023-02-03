@@ -1,11 +1,14 @@
-from Encoder import Encoder
-from EncoderNoSig import EncoderNoSig
-from Generator import Generator
-from GeneratorNoSig import GeneratorNoSig
+"""
+FID evaluation of a VAE.
+"""
+
 import torch.utils.data
 import torchvision.utils as vutils
 import matplotlib.pyplot as plt
 import numpy as np
+
+from vc.celeba.Encoder import Encoder
+from vc.celeba.Generator import Generator
 
 
 def main():
@@ -34,7 +37,7 @@ def main():
     print(netG)
 
     # Create Decoder
-    decoder = GeneratorNoSig(nz, ngf, nc).to(device)
+    decoder = Generator(nz, ngf, nc).to(device)
     decoder.load_state_dict(torch.load(decoder1_dir))
     print(decoder)
     # Create Encoder

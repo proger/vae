@@ -1,3 +1,6 @@
+"""
+Training of a VAE encoder using conditional likelihood against the pre-trained GAN generator.
+"""
 import torch.nn as nn
 import torch.utils.data
 import torchvision.utils as vutils

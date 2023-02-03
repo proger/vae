@@ -1,11 +1,16 @@
+"""
+DCGAN Generator
+
+Based on https://pytorch.org/tutorials/beginner/dcgan_faces_tutorial.html
+"""
+
 import torch
 import torch.nn as nn
 
 
-# Generator/ Decoder 
 class Generator(nn.Module):
     def __init__(self, nz, ngf, nc, learn_sigma=False):
-        super(Generator, self).__init__()
+        super().__init__()
         if learn_sigma:
             self.sigma = nn.Parameter(0.05 * torch.ones([1]), requires_grad=True)
         else:

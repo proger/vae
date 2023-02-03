@@ -1,3 +1,6 @@
+"""
+Based on https://pytorch.org/tutorials/beginner/dcgan_faces_tutorial.html
+"""
 import torch
 import random
 import torch.nn as nn
@@ -6,9 +9,11 @@ import torch.utils.data
 import torchvision.datasets as dset
 import torchvision.transforms as transforms
 import torchvision.utils as vutils
+import wandb
+
 from va.celeba.Discriminator import Discriminator
 from va.celeba.Generator import Generator
-import wandb
+
 
 
 def load_data(dataroot, image_size, batch_size, workers):

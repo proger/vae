@@ -1,10 +1,13 @@
-from Encoder import Encoder
-from Generator import Generator
+"""
+Joint training of a VAE using ELBO.
+"""
 import torch.nn as nn
 import torch.utils.data
 import torchvision.utils as vutils
 import wandb
 
+from vc.celeba.Encoder import Encoder
+from vc.celeba.Generator import Generator
 
 def log_gauss(mu, sigma, x):
     diff = x - mu

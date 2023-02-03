@@ -1,10 +1,16 @@
+"""
+DCGAN Encoder
+
+Based on https://pytorch.org/tutorials/beginner/dcgan_faces_tutorial.html
+"""
+
 import torch
 import torch.nn as nn
 
 
 class Encoder(nn.Module):
     def __init__(self, nz, ndf, nc):
-        super(Encoder, self).__init__()
+        super().__init__()
         self.nz = nz
         self.main = nn.Sequential(
             # input is (nc) x 64 x 64
