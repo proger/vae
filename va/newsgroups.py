@@ -36,7 +36,6 @@ def make_datasets(smooth: bool = True):
     vocabulary = torch.topk(global_word_counts, 10000).indices
     train_counts = train_counts[:, vocabulary]
     test_counts = test_counts[:, vocabulary]
-    
 
     if smooth:
         word_counts = train_counts.sum(dim=0)
