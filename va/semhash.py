@@ -38,7 +38,7 @@ def log1p_exp(x):
     return res
 
 
-def log_prob(x, logits): # KL?
+def log_prob(x, logits):
     numerator = - (x * logits).sum(dim=1)
     denominator = - (x * counts_to_frequencies(x).log()).sum(dim=1)
     return numerator - denominator
@@ -78,9 +78,22 @@ class SematicHasher(nn.Module):
         code_logits = self.encoder(word_counts)
         return code_logits
 
+    def log_prob(self, word_counts, code):
+        word_logits = self.decoder_code(code)
+        return log_prob(word_counts, word_logits)
+
     def elbo(self, code, code_logits, word_counts):
-        word_logits = self.decoder(code)
-        return log_prob(word_counts, word_logits) + entropy(code, code_logits.detach()).sum(dim=1)
+        "ELBO with stochastic entropy (based on sampled binary latent code)"
+        log_prob = self.log_prob(word_counts, code)
+        return log_prob + entropy(code, code_logits.detach()).sum(dim=1)
+
+    def sample_elbo(self, code_logits, word_counts):
+        "ELBO with analytic entropy (based on sigmoid of code_logits)"
+        uniform = torch.rand_like(code_logits)
+        right = (uniform < torch.sigmoid( code_logits)).type_as(code_logits)
+
+        log_prob = self.log_prob(word_counts, right)
+        return log_prob + entropy(code_logits.sigmoid(), code_logits).sum(dim=1)
 
     def disarm_elbo(self, code_logits, word_counts):
         """ELBO with gradient estimates using DisARM. See:

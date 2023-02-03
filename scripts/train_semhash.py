@@ -42,11 +42,11 @@ def train(model, train_loader, optimizer, reinforce_steps=1):
     train_loss = 0.
     for word_counts, in train_loader:
         word_counts = word_counts.to(device)
-        z_logits = model(word_counts)
+        code_logits = model(word_counts)
         for _ in range(reinforce_steps):
-            loss = model.disarm_elbo(z_logits, word_counts).mean() / reinforce_steps
-            loss.backward(retain_graph=True)
-        train_loss += loss.item()
+            loss = model.disarm_elbo(code_logits, word_counts).mean()
+            (loss / reinforce_steps).backward(retain_graph=True)
+        train_loss += model.sample_elbo(code_logits, word_counts)
         optimizer.step()
         optimizer.zero_grad(set_to_none=True)
     train_loss /= len(train_loader)
@@ -60,8 +60,8 @@ def evaluate(model, test_loader):
     valid_loss = 0.
     for word_counts, in test_loader:
         word_counts = word_counts.to(device)
-        z_logits = model(word_counts)
-        loss = model.disarm_elbo(z_logits, word_counts).mean()
+        code_logits = model(word_counts)
+        loss = model.sample_elbo(code_logits, word_counts).mean()
         valid_loss += loss.item()
     valid_loss /= len(test_loader)
 
