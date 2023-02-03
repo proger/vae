@@ -73,7 +73,7 @@ test_losses = []
 for epoch in range(1000):
     train_loss = train(model, train_loader, optimizer)
     test_loss = evaluate(model, test_loader)
-    print(f'Epoch {epoch}: train_loss={train_loss:.2f} test_loss={test_loss:.2f}')
+    print(f'Epoch {epoch}: train_loss={train_loss:.2f} test_loss={test_loss:.2f}', flush=True)
     train_losses.append(train_loss)
     test_losses.append(test_loss)
 
@@ -81,7 +81,7 @@ for epoch in range(1000):
 for epoch in range(1000, 1500):
     train_loss = train(model, train_loader, optimizer, reinforce_steps=10)
     test_loss = evaluate(model, test_loader)
-    print(f'Epoch {epoch}: train_loss={train_loss:.2f} test_loss={test_loss:.2f}')
+    print(f'Epoch {epoch}: train_loss={train_loss:.2f} test_loss={test_loss:.2f}', flush=True)
     train_losses.append(train_loss)
     test_losses.append(test_loss)
 
