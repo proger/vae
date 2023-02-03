@@ -29,14 +29,6 @@ def prepare_data():
     return train_counts, frequencies, test_counts
 
 
-def load_data_old():
-    import pickle
-    train_data = pickle.load(open("data/20ng/matlab/train.data.pkl", "rb"))
-    test_data = pickle.load(open("data/20ng/matlab/test.data.pkl", "rb"))
-    
-    return train_data.counts, train_data.f0, test_data.counts
-
-
 def create_data():
     train_counts, frequencies, test_counts = prepare_data()
 
