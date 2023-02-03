@@ -51,15 +51,13 @@ def create_data():
     # add a bit of normal text distribution to all data entries (acts as a Bayesian estimate of frequencies, can safely take log or divide by sum)
     X = X + train_f0[np.newaxis,:]
     X = torch.tensor(X).float()
-    Y = torch.tensor(np.zeros(X.shape[0])).float()   # ignore labels
-    train = torch.utils.data.TensorDataset(X, Y)
+    train = torch.utils.data.TensorDataset(X)
 
     X = test_counts.toarray()
     # add a bit of normal text distribution to all data entries (acts as a Bayesian estimate of frequencies, can safely take log or divide by sum)
     X = X + train_f0[np.newaxis,:]
     X = torch.tensor(X).float()
-    Y = torch.tensor(np.zeros(X.shape[0])).float()   # ignore labels
-    test = torch.utils.data.TensorDataset(X, Y)
+    test = torch.utils.data.TensorDataset(X)
 
     return train, test
 

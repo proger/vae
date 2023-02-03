@@ -26,10 +26,10 @@ def train(model, train_loader, test_loader, optimizer):
     device = next(model.parameters()).device
 
     train_loss = 0.
-    for counts, categories in train_loader:
-        counts = counts.to(device)
-        z_logits = model.encode(counts)
-        loss = model.disarm_elbo(z_logits, counts).mean()
+    for word_counts, in train_loader:
+        word_counts = word_counts.to(device)
+        z_logits = model.encode(word_counts)
+        loss = model.disarm_elbo(z_logits, word_counts).mean()
         loss.backward()
         train_loss += loss.item()
         optimizer.step()
@@ -38,10 +38,10 @@ def train(model, train_loader, test_loader, optimizer):
 
     with torch.inference_mode():
         valid_loss = 0.
-        for counts, categories in test_loader:
-            counts = counts.to(device)
-            z_logits = model.encode(counts)
-            loss = model.disarm_elbo(z_logits, counts).mean()
+        for word_counts, in test_loader:
+            word_counts = word_counts.to(device)
+            z_logits = model.encode(word_counts)
+            loss = model.disarm_elbo(z_logits, word_counts).mean()
             valid_loss += loss.item()
         valid_loss /= len(test_loader)
     return train_loss, valid_loss
