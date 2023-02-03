@@ -98,7 +98,7 @@ class SematicHasher(nn.Module):
         # DisARM variance reduction
         ones, zeros = torch.ones_like(right), torch.zeros_like(right)
         inner_term = torch.pow(-1*ones, right) * torch.where(left != right, ones, zeros) * torch.sigmoid(torch.abs(code_logits))
-        # ARM goes like this:
+        ## ARM does this instead:
         # inner_term = 2*uniform - 1
 
         # gradient estimate
