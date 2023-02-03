@@ -1,0 +1,15 @@
+[project]
+name = "bern"
+version = "1.0.0"
+description = "VAE Experiments"
+license = {file = "LICENSE"}
+authors = []
+readme = "README.md"
+classifiers = ["License :: OSI Approved :: MIT License"]
+dynamic = ["version", "description"]
+dependencies = [
+    "torch",
+]
+
+[project.urls]
+Home = "https://example.com"
