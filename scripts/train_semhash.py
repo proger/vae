@@ -13,6 +13,8 @@ parser.add_argument('--decoder_hidden_features', type=int, nargs='*', default=()
 parser.add_argument('output_checkpoint', type=str, help='save the checkpoint')
 args = parser.parse_args()
 
+print(vars(args))
+
 torch.manual_seed(1)
 
 model = SematicHasher(
