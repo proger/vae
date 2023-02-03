@@ -7,8 +7,8 @@ import torchvision.utils as vutils
 import matplotlib.pyplot as plt
 import numpy as np
 
-from vc.celeba.Encoder import Encoder
-from vc.celeba.Generator import Generator
+from va.celeba.encoder import Encoder
+from va.celeba.generator import Generator
 
 
 def main():

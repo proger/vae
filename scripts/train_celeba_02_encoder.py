@@ -6,8 +6,8 @@ import torch.utils.data
 import torchvision.utils as vutils
 import wandb
 
-from va.celeba.Encoder import Encoder
-from va.celeba.Generator import Generator
+from va.celeba.encoder import Encoder
+from va.celeba.generator import Generator
 
 
 # custom weights initialization called on netG and netD

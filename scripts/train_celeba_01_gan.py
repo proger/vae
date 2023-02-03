@@ -11,8 +11,8 @@ import torchvision.transforms as transforms
 import torchvision.utils as vutils
 import wandb
 
-from va.celeba.Discriminator import Discriminator
-from va.celeba.Generator import Generator
+from va.celeba.discriminator import Discriminator
+from va.celeba.generator import Generator
 
 
 

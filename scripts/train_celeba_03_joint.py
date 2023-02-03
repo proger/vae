@@ -6,8 +6,8 @@ import torch.utils.data
 import torchvision.utils as vutils
 import wandb
 
-from vc.celeba.Encoder import Encoder
-from vc.celeba.Generator import Generator
+from va.celeba.encoder import Encoder
+from va.celeba.generator import Generator
 
 def log_gauss(mu, sigma, x):
     diff = x - mu
