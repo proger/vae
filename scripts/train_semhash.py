@@ -46,7 +46,8 @@ def train(model, train_loader, optimizer, reinforce_steps=1):
         for _ in range(reinforce_steps):
             loss = model.disarm_elbo(code_logits, word_counts).mean()
             (loss / reinforce_steps).backward(retain_graph=True)
-        train_loss += model.sample_elbo(code_logits, word_counts)
+        with torch.no_grad():
+            train_loss += model.sample_elbo(code_logits, word_counts).mean().item()
         optimizer.step()
         optimizer.zero_grad(set_to_none=True)
     train_loss /= len(train_loader)
