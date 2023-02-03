@@ -56,13 +56,14 @@ class SematicHasher(nn.Module):
         self,
         vocab_size: int = 10000,
         latent_features: int = 64,
+        encoder_hidden_features: Sequence[int] = (),
         decoder_hidden_features: Sequence[int] = (512, )
     ):
         super().__init__()
         
         self.encoder = make_block(
             in_features=vocab_size,
-            hidden_features=(),
+            hidden_features=encoder_hidden_features,
             out_features=latent_features,
         )
         
