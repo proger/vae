@@ -16,15 +16,17 @@ model.to('mps')
 print(model)
 
 optimizer = model.make_optimizer(lr=1e-3)
-train, train_loader, _, test, test_loader = create_data(batch_size=256)
+train, test = create_data()
 
-print(train[0][0].shape)
+train_loader = torch.utils.data.DataLoader(train, batch_size=256, shuffle=True, num_workers=0)
+test_loader = torch.utils.data.DataLoader(test, batch_size=256, shuffle=False, num_workers=0)
+
 
 def train(model, train_loader, test_loader, optimizer):
     device = next(model.parameters()).device
 
     train_loss = 0.
-    for i, (counts, categories) in enumerate(train_loader):
+    for counts, categories in train_loader:
         counts = counts.to(device)
         z_logits = model.encode(counts)
         loss = model.disarm_elbo(z_logits, counts).mean()
@@ -36,7 +38,7 @@ def train(model, train_loader, test_loader, optimizer):
 
     with torch.inference_mode():
         valid_loss = 0.
-        for i, (counts, categories) in enumerate(test_loader):
+        for counts, categories in test_loader:
             counts = counts.to(device)
             z_logits = model.encode(counts)
             loss = model.disarm_elbo(z_logits, counts).mean()
@@ -44,9 +46,11 @@ def train(model, train_loader, test_loader, optimizer):
         valid_loss /= len(test_loader)
     return train_loss, valid_loss
 
+
 for epoch in range(1500):
     train_loss, test_loss = train(model, train_loader, test_loader, optimizer)
     print(f'Epoch {epoch}: train_loss={train_loss:.2f} test_loss={test_loss:.2f}')
+
 
 torch.save({
     'model': model.state_dict(),
