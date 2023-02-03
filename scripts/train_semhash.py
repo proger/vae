@@ -10,6 +10,7 @@ parser = argparse.ArgumentParser()
 parser.add_argument('--device', type=str, default='cuda' if torch.cuda.is_available() else 'mps')
 parser.add_argument('--latent_features', type=int, default=64, help='number of latent Bernoulli variables (bits)')
 parser.add_argument('--decoder_hidden_features', type=int, nargs='*', default=(), help='list of hidden layer dimensions for the decoder, one for each layer')
+parser.add_argument('output_checkpoint', type=str, help='save the checkpoint')
 args = parser.parse_args()
 
 torch.manual_seed(1)
@@ -91,4 +92,4 @@ torch.save({
     'train_losses': train_losses,
     'test_losses': test_losses,
     'args': vars(args),
-}, '20newsgroups.pt')
+}, args.output_checkpoint)
