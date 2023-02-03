@@ -45,7 +45,6 @@ def make_datasets(vocab_size: int = 10000, frequency_smoothing: bool = True):
         train_counts += frequencies[None,:]
         test_counts += frequencies[None,:]
 
-
     return TensorDataset(train_counts), TensorDataset(test_counts)
 
 
