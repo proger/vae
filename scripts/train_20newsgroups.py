@@ -2,7 +2,7 @@ import torch
 import torch.nn as nn
 
 from va.discrete import VAE
-from va.newsgroups import create_data
+from va.newsgroups import make_datasets
 
 torch.manual_seed(1)
 
@@ -16,7 +16,7 @@ model.to('mps')
 print(model)
 
 optimizer = model.make_optimizer(lr=1e-3)
-train, test = create_data()
+train, test = make_datasets()
 
 train_loader = torch.utils.data.DataLoader(train, batch_size=256, shuffle=True, num_workers=0)
 test_loader = torch.utils.data.DataLoader(test, batch_size=256, shuffle=False, num_workers=0)
