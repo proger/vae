@@ -1,63 +1,48 @@
-import pickle
-
 import torch
-import numpy as np
-
-import scipy
 
 
 def prepare_data():
     # load the word counts data provided from the original dataset:
-    train_data = np.loadtxt("data/20ng/matlab/train.data", dtype='i', delimiter=' ')
-    train_counts = scipy.sparse.csc_matrix((train_data[:,2], (train_data[:,0] - 1, train_data[:,1] - 1))) # 0-based indexing
     
-    S0 = np.asarray((train_counts>0).sum(axis=0)).flatten() # number of times word used in the train data
-    # select 10000 most frequent words and save data (from end-10000 till the end)
-    ind = np.argsort(S0)[-10000:]        
-    train_counts = train_counts[:,ind]
+    with open("data/20ng/matlab/train.data") as f:
+        train_data = torch.LongTensor([[int(i) for i in line.split()] for line in f])
+        train_counts = torch.sparse_coo_tensor(train_data[:,:2].T - 1, train_data[:,2]).to_dense()
 
-    # check any empty documents
-    assert((train_counts.sum(axis=1) ==0).sum() == 0)
+    global_word_counts = (train_counts>0).sum(dim=0)
+    vocabulary = torch.topk(global_word_counts, 10000).indices
 
-    # word frequencies in the whole corpus
-    train_f0 = np.asarray(train_counts.sum(axis=0)).flatten() # number of times wors from the selected subvocabulary appear in train set
-    train_f0 = train_f0 + 1/len(train_f0) # increase the count of each work by 1/10000 (regularization)
-    train_f0 = train_f0 / train_f0.sum() # word frequencies in the whole training set
-
-    # same for the test data
-    test_data = np.loadtxt("data/20ng/matlab/test.data", dtype='i', delimiter=' ')
-    test = scipy.sparse.csc_matrix((test_data[:,2], (test_data[:,0] - 1, test_data[:,1] - 1))) # 0-based indexing
-    test_counts = test[:, ind]
+    # keep only vocabulary words
+    train_counts = train_counts[:, vocabulary]
 
     # word frequencies in the whole corpus
-    test_f0 = np.asarray(test_counts.sum(axis=0)).flatten()
-    test_f0 = test_f0 + 1/len(test_f0)
-    test_f0 = test_f0 / test_f0.sum()
+    counts = train_counts.sum(dim=0) # number of times words from the selected vocabulary appear in train set
+    counts_smoothed = counts + 1/len(counts) # increase the count of each word by 1/10000 (regularization)
+    frequencies = counts_smoothed / counts_smoothed.sum() # word frequencies in the whole training set
 
-    return train_counts, train_f0, test_counts, test_f0
+    # load the test set
+    with open("data/20ng/matlab/test.data") as f:
+        test_data = torch.LongTensor([[int(i) for i in line.split()] for line in f])
+        test_counts = torch.sparse_coo_tensor(test_data[:,:2].T - 1, test_data[:,2]).to_dense()
+
+    test_counts = test_counts[:, vocabulary]
+
+    return train_counts, frequencies, test_counts
 
 
 def load_data_old():
+    import pickle
     train_data = pickle.load(open("data/20ng/matlab/train.data.pkl", "rb"))
     test_data = pickle.load(open("data/20ng/matlab/test.data.pkl", "rb"))
     
-    return train_data.counts, train_data.f0, test_data.counts, test_data.f0
+    return train_data.counts, train_data.f0, test_data.counts
 
 
 def create_data():
-    train_counts, train_f0, test_counts, test_f0 = prepare_data()
+    train_counts, frequencies, test_counts = prepare_data()
 
-    X = train_counts
     # add a bit of normal text distribution to all data entries (acts as a Bayesian estimate of frequencies, can safely take log or divide by sum)
-    X = X + train_f0[np.newaxis,:]
-    X = torch.tensor(X).float()
-    train = torch.utils.data.TensorDataset(X)
-
-    X = test_counts.toarray()
-    # add a bit of normal text distribution to all data entries (acts as a Bayesian estimate of frequencies, can safely take log or divide by sum)
-    X = X + train_f0[np.newaxis,:]
-    X = torch.tensor(X).float()
-    test = torch.utils.data.TensorDataset(X)
+    train = torch.utils.data.TensorDataset(train_counts + frequencies[None,:])
+    test = torch.utils.data.TensorDataset(test_counts + frequencies[None,:])
 
     return train, test
 
