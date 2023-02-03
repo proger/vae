@@ -45,7 +45,7 @@ def train(model, train_loader, optimizer, reinforce_steps=1):
         z_logits = model(word_counts)
         for _ in range(reinforce_steps):
             loss = model.disarm_elbo(z_logits, word_counts).mean() / reinforce_steps
-            loss.backward()
+            loss.backward(retain_graph=True)
         train_loss += loss.item()
         optimizer.step()
         optimizer.zero_grad(set_to_none=True)
