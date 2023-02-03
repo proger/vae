@@ -51,6 +51,7 @@ def entropy(code, code_logits):
 
 
 class SematicHasher(nn.Module):
+    "Bernoulli VAE for Semantic Hashing"
     def __init__(
         self,
         vocab_size: int = 10000,
@@ -75,11 +76,13 @@ class SematicHasher(nn.Module):
         )
         
     def forward(self, word_counts):
+        "Forward the encoder: returns document hash code logits"
         code_logits = self.encoder(word_counts)
         return code_logits
-
+    
     def log_prob(self, word_counts, code):
-        word_logits = self.decoder_code(code)
+        "Log probability of the input word counts under the decoder aka reconstruction loss"
+        word_logits = self.decoder(code)
         return log_prob(word_counts, word_logits)
 
     def elbo(self, code, code_logits, word_counts):
