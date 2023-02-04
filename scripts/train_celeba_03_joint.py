@@ -1,13 +1,10 @@
-"""
-Joint training of a VAE using ELBO.
-"""
+from Encoder import Encoder
+from Generator import Generator
 import torch.nn as nn
 import torch.utils.data
 import torchvision.utils as vutils
 import wandb
 
-from va.celeba.encoder import Encoder
-from va.celeba.generator import Generator
 
 def log_gauss(mu, sigma, x):
     diff = x - mu
@@ -15,11 +12,10 @@ def log_gauss(mu, sigma, x):
 
 
 def main():
-    wandb.init(project="ATML", entity="dl_prac")
-    dir = "/home/zang/Qianbo/ATML/"
-    decoder_dir = dir + "CheckGenerator_sig/generator-44.pt"
-    encoder_dir = dir + "CheckEncoder_sig/encoder-990000.pt"
-    exp_dir = dir + "CheckVAE_sig/"  
+    wandb.init(project="celeba", entity="dl")
+    generator_path = "check/gan_generator/generator-44.pt"
+    encoder_path = "check/vae_encoder/encoder-990000.pt"
+    vae_check_dir = "check/vae_fix/"  
     
     nz = 100
     ngf = 64
@@ -38,20 +34,20 @@ def main():
 
     # Create Decoder
     decoder_gt = Generator(nz, ngf, nc, learn_sigma=True).to(device)
-    decoder_gt.load_state_dict(torch.load(decoder_dir))
+    decoder_gt.load_state_dict(torch.load(generator_path))
     wandb.watch(decoder_gt)
     print(decoder_gt)
 
     decoder = Generator(nz, ngf, nc, learn_sigma=True).to(device)
     wandb.watch(decoder)
-    decoder.load_state_dict(torch.load(decoder_dir))
+    decoder.load_state_dict(torch.load(generator_path))
     print(decoder)
 
     # Create Encoder
     encoder = Encoder(nz, ndf, nc).to(device)
     wandb.watch(encoder)
     # wandb.watch(encoder)
-    encoder.load_state_dict(torch.load(encoder_dir))
+    encoder.load_state_dict(torch.load(encoder_path))
     print(encoder)
 
     optimizer = torch.optim.Adam(list(encoder.parameters()) + list(decoder.parameters()), lr=lr) 
@@ -93,8 +89,8 @@ def main():
         stats = {"elbo": elbo.item(), "z_means": z_means, "zz_means": zz_means, "eentr": eentr}
 
         if epoch % 10000 == 0:
-            file_encoder = exp_dir + "encoder-" + str(epoch) + ".pt"
-            file_decoder = exp_dir + "decoder-" + str(epoch) + ".pt"
+            file_encoder = vae_check_dir + "encoder-" + str(epoch) + ".pt"
+            file_decoder = vae_check_dir + "decoder-" + str(epoch) + ".pt"
             torch.save(encoder.state_dict(), file_encoder)
             torch.save(decoder.state_dict(), file_decoder)
             print("saved encoder to", file_encoder)

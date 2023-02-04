@@ -1,6 +1,3 @@
-"""
-Based on https://pytorch.org/tutorials/beginner/dcgan_faces_tutorial.html
-"""
 import torch
 import random
 import torch.nn as nn
@@ -9,11 +6,10 @@ import torch.utils.data
 import torchvision.datasets as dset
 import torchvision.transforms as transforms
 import torchvision.utils as vutils
+from Discriminator import Discriminator
+from Generator import Generator
 import wandb
-
-from va.celeba.discriminator import Discriminator
-from va.celeba.generator import Generator
-
+import os
 
 
 def load_data(dataroot, image_size, batch_size, workers):
@@ -50,9 +46,9 @@ def weights_init(m):
 
 
 def main():
-    wandb.init(project="ATML", entity="dl_prac")
-    data_dir = "/home/zang/Qianbo/ATML/celeba/"
-    exp_dir = "/home/zang/Qianbo/ATML/CheckGenerator_sig/"
+    wandb.init(project="celeba", entity="dl")
+    data_dir = "data/celebA/"
+    gan_check_dir = "check/gan_generator/"
 
     # Hyper-parameters
     # Set random seed for reproducibility
@@ -177,7 +173,7 @@ def main():
             wandb.log(stats)
             iters += 1
 
-        filename = exp_dir + "generator-" + str(epoch) + ".pt"
+        filename = gan_check_dir + "generator-" + str(epoch) + ".pt"
         torch.save(netG.state_dict(), filename)
         print("saved generator to", filename)
 

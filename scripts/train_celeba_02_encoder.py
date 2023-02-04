@@ -1,13 +1,9 @@
-"""
-Training of a VAE encoder using conditional likelihood against the pre-trained GAN generator.
-"""
+from Encoder import Encoder
+from Generator import Generator
 import torch.nn as nn
 import torch.utils.data
 import torchvision.utils as vutils
 import wandb
-
-from va.celeba.encoder import Encoder
-from va.celeba.generator import Generator
 
 
 # custom weights initialization called on netG and netD
@@ -21,10 +17,9 @@ def weights_init(m):
 
 
 def main():
-    wandb.init(project="ATML", entity="dl_prac")
-    dir = "/home/zang/Qianbo/ATML/"
-    decoder_dir = dir + "CheckGenerator_sig/generator-44.pt"
-    exp_dir = dir + "CheckEncoder_sig/"
+    wandb.init(project="celeba", entity="dl")
+    generator_path = "check/gan_generator/generator-44.pt"
+    encoder_check_dir = "check/vae_encoder/"
 
     nz = 100
     ngf = 64
@@ -45,7 +40,7 @@ def main():
     # Create Decoder
     decoder = Generator(nz, ngf, nc, learn_sigma=True).to(device)
     wandb.watch(decoder)
-    decoder.load_state_dict(torch.load(decoder_dir))
+    decoder.load_state_dict(torch.load(generator_path))
     print(decoder)
     # Create Encoder
     encoder = Encoder(nz, ndf, nc).to(device)
@@ -83,7 +78,7 @@ def main():
         stats = {"loss": loss.item(), "z_means": z_means, "zz_means": zz_means, "acc_loss": acc_loss, "eentr": eentr}
 
         if epoch % 10000 == 0:
-            filename = exp_dir + "encoder-" +str(epoch) + ".pt"
+            filename = encoder_check_dir + "encoder-" +str(epoch) + ".pt"
             torch.save(encoder.state_dict(), filename)
             print("saved encoder to", filename)
 
