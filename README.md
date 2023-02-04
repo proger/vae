@@ -2,17 +2,36 @@
 
 ## Prerequisites
 
+This Python project uses [hatch](https://hatch.pypa.io/latest/intro/) to manage the `va` package.
+Training scripts in [./scripts](./scripts) require the package and its dependencies to be installed.
+
+Please install the package using the following command.
+
 ```
-export PYTHONPATH=.
+pip install hatch
+pip install -e .
 ```
 
-## Gaussian Mixtures (start here!)
+To create a virtual environment, you may use `hatch shell`.
+
+## Gaussian Mixtures
+
+This experiment demonstrates a VAE with a factorized encoder with not limited representation power.
+When trained jointly, the decoder is sacrificing its reconstruction ability to adapt to the encoder.
 
 ```
 python ./scripts/train_gmm.py
 ```
 
 ## Semantic Hashing
+
+This experiment trains a Bernoulli VAE on a Semantic Hashing task on the 20 Newsgroups dataset.
+To reproduce the model with the best hyperparameters, run:
+
+```
+python ./scripts/train_semhash.py semhash.pt
+```
+
 
 The following list of commands reproduces all experiments:
 
