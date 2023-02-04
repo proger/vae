@@ -1,15 +1,44 @@
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
 [project]
-name = "bern"
-version = "1.0.0"
+name = "vae"
 description = "VAE Experiments"
-license = {file = "LICENSE"}
-authors = []
 readme = "README.md"
-classifiers = ["License :: OSI Approved :: MIT License"]
-dynamic = ["version", "description"]
+requires-python = ">=3.7"
+license = "MIT"
+keywords = []
+authors = []
+dependencies = ["torch", "torchvision", "wandb", "numpy", "matplotlib"]
+dynamic = ["version"]
+
+[tool.hatch.version]
+path = "va/__about__.py"
+
+[tool.hatch.envs.default]
 dependencies = [
-    "torch",
+  "pytest",
+  "pytest-cov",
+]
+[tool.hatch.envs.default.scripts]
+cov = "pytest --cov-report=term-missing --cov-config=pyproject.toml --cov=va --cov=tests {args}"
+no-cov = "cov --no-cov {args}"
+
+[[tool.hatch.envs.test.matrix]]
+python = ["37", "38", "39", "310", "311"]
+
+[tool.coverage.run]
+branch = true
+parallel = true
+omit = [
+  "va/__about__.py",
 ]
 
-[project.urls]
-Home = "https://example.com"
+[tool.coverage.report]
+exclude_lines = [
+  "no cov",
+  "if __name__ == .__main__.:",
+  "if TYPE_CHECKING:",
+]
