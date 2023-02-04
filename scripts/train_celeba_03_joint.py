@@ -1,9 +1,11 @@
-from Encoder import Encoder
-from Generator import Generator
+import wandb
+
 import torch.nn as nn
 import torch.utils.data
 import torchvision.utils as vutils
-import wandb
+
+from va.celeba.encoder import Encoder
+from va.celeba.generator import Generator
 
 
 def log_gauss(mu, sigma, x):

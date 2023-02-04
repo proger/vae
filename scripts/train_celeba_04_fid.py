@@ -1,11 +1,12 @@
-from Encoder import Encoder
-from EncoderNoSig import EncoderNoSig
-from Generator import Generator
-from GeneratorNoSig import GeneratorNoSig
-import torch.utils.data
-import torchvision.utils as vutils
 import matplotlib.pyplot as plt
 import numpy as np
+import torch.nn as nn
+import torch.utils.data
+import torchvision.utils as vutils
+import wandb
+
+from va.celeba.encoder import Encoder
+from va.celeba.generator import Generator
 
 
 def main():

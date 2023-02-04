@@ -1,15 +1,17 @@
-import torch
 import random
+import os
+
+import torch
 import torch.nn as nn
 import torch.optim as optim
 import torch.utils.data
 import torchvision.datasets as dset
 import torchvision.transforms as transforms
 import torchvision.utils as vutils
-from Discriminator import Discriminator
-from Generator import Generator
 import wandb
-import os
+
+from va.celeba.discriminator import Discriminator
+from va.celeba.generator import Generator
 
 
 def load_data(dataroot, image_size, batch_size, workers):
