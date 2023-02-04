@@ -48,9 +48,9 @@ def weights_init(m):
 
 
 def main():
-    wandb.init(project="celeba", entity="dl")
-    data_dir = "data/celebA/"
-    gan_check_dir = "check/gan_generator/"
+    wandb.init()
+    data_dir = "data/img_align_celeba/"
+    gan_check_dir = "exp/dcgan/"
 
     # Hyper-parameters
     # Set random seed for reproducibility

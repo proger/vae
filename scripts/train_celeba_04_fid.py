@@ -10,10 +10,10 @@ from va.celeba.generator import Generator
 
 
 def main():
-    ground_path = "check/gan_generator/generator-44.pt"
-    vae_encoder_dir = "check/vae_encoder/"
-    vae_fix_dir = "check/vae_fix/"
-    vae_learn_dir = "check/vae_learn/"
+    ground_path = "exp/dcgan/generator-44.pt"
+    vae_encoder_dir = "exp/dcgan-encoder/"
+    vae_fix_dir = "exp/dcgan-vae/"
+    vae_learn_dir = "exp/dcgan-vae-sigma/"
 
     img_gt_dir = "data/img_gt/"
     img_con_dir = "data/img_encoder/"

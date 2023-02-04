@@ -14,10 +14,10 @@ def log_gauss(mu, sigma, x):
 
 
 def main():
-    wandb.init(project="celeba", entity="dl")
-    generator_path = "check/gan_generator/generator-44.pt"
-    encoder_path = "check/vae_encoder/encoder-990000.pt"
-    vae_check_dir = "check/vae_fix/"  
+    wandb.init()
+    generator_path = "exp/dcgan/generator-44.pt"
+    encoder_path = "exp/dcgan-encoder/encoder-990000.pt"
+    vae_check_dir = "exp/dcgan-vae/"  
     
     nz = 100
     ngf = 64

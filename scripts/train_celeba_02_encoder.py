@@ -19,9 +19,9 @@ def weights_init(m):
 
 
 def main():
-    wandb.init(project="celeba", entity="dl")
-    generator_path = "check/gan_generator/generator-44.pt"
-    encoder_check_dir = "check/vae_encoder/"
+    wandb.init()
+    generator_path = "exp/dcgan/generator-44.pt"
+    encoder_check_dir = "exp/dcgan-encoder/"
 
     nz = 100
     ngf = 64

@@ -60,6 +60,10 @@ python ./scripts/train_semhash.py --frequencies --latent_features 8 semhash_e3_b
 
 ## CelebA
 
+This experiment is based on [DCGAN TUTORIAL](https://pytorch.org/tutorials/beginner/dcgan_faces_tutorial.html).
+
+To begin, you need to download **Align&Cropped Images** version (`img_align_celeba.zip`) of the dataset at http://mmlab.ie.cuhk.edu.hk/projects/CelebA.html and unpack it do `data/`.
+
 ```
 python ./scripts/train_celeba_01_gan.py
 python ./scripts/train_celeba_02_encoder.py
