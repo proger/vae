@@ -1,6 +1,15 @@
+# [Re] VAE Approximation Error: ELBO and Exponential Families
+
+## Prerequisites
 
 ```
-pip install -e .
+export PYTHONPATH=.
+```
+
+## Gaussian Mixtures (start here!)
+
+```
+python ./scripts/train_gmm.py
 ```
 
 ## Semantic Hashing
@@ -46,4 +55,14 @@ python ./scripts/train_semhash.py --frequencies --latent_features 16 semhash_e3_
 python ./scripts/train_semhash.py --frequencies --latent_features 32 semhash_e3_bits32_dhidden0.pt
 python ./scripts/train_semhash.py --frequencies --latent_features 64 semhash_e3_bits64_dhidden0.pt
 python ./scripts/train_semhash.py --frequencies --latent_features 8 semhash_e3_bits8_dhidden0.pt
+```
+
+
+## CelebA
+
+```
+python ./scripts/train_celeba_01_gan.py
+python ./scripts/train_celeba_02_encoder.py
+python ./scripts/train_celeba_03_encoder.py
+python ./scripts/train_celeba_04_fid.py
 ```
