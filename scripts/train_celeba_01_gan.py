@@ -1,5 +1,5 @@
 import random
-import os
+from pathlib import Path
 
 import torch
 import torch.nn as nn
@@ -49,8 +49,9 @@ def weights_init(m):
 
 def main():
     wandb.init()
-    data_dir = "data/img_align_celeba/"
-    gan_check_dir = "exp/dcgan/"
+    data_dir = "data/celeba/"
+    exp = Path("exp/dcgan/")
+    exp.mkdir(parents=True, exist_ok=True)
 
     # Hyper-parameters
     # Set random seed for reproducibility
@@ -68,7 +69,7 @@ def main():
     num_epochs = 100 # Number of training epochs
     lr = 0.0002 # Learning rate for optimizers
     beta1 = 0.5 # Beta1 hyperparam for Adam optimizers
-    device = "cuda:0" if torch.cuda.is_available() else "cpu"
+    device = "cuda" if torch.cuda.is_available() else "cpu"
     print("Using {} device".format(device))
     wandb.config = {
         "learning_rate": lr,
@@ -175,8 +176,8 @@ def main():
             wandb.log(stats)
             iters += 1
 
-        filename = gan_check_dir + "generator-" + str(epoch) + ".pt"
-        torch.save(netG.state_dict(), filename)
+        filename = exp / f"generator-{epoch}.pt"
+        torch.save(netG.state_dict(), str(filename))
         print("saved generator to", filename)
 
 
