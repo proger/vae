@@ -83,9 +83,17 @@ This experiment is based on [DCGAN TUTORIAL](https://pytorch.org/tutorials/begin
 
 To begin, you need to download **Align&Cropped Images** version (`img_align_celeba.zip`) of the dataset at http://mmlab.ie.cuhk.edu.hk/projects/CelebA.html and unpack it do `data/celeba`.
 
+
 ```
-python ./scripts/train_celeba_01_gan.py
-python ./scripts/train_celeba_02_encoder.py
-python ./scripts/train_celeba_03_encoder.py
-python ./scripts/train_celeba_04_fid.py
+python ./scripts/train_celeba_01_gan.py  # pretrain a GAN
+python ./scripts/train_celeba_02_encoder.py # pretrain encoder
+python ./scripts/train_celeba_03_joint.py # train VAE
+python ./scripts/train_celeba_04_fid.py # generate images to compute FID
+```
+
+To compute FID scores you will need to install [pytorch-fid](https://github.com/mseitzer/pytorch-fid).
+
+```
+python -m pytorch_fid exp/dcgan/images exp/dcgan-encoder/images
+python -m pytorch_fid exp/dcgan/images exp/dcgan-vae/images
 ```
