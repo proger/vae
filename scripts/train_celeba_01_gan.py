@@ -1,5 +1,6 @@
 import random
 from pathlib import Path
+import time
 
 import torch
 import torch.nn as nn
@@ -12,6 +13,7 @@ import wandb
 
 from va.celeba.discriminator import Discriminator
 from va.celeba.generator import Generator
+from va.celeba.utils import weights_init
 
 
 def load_data(dataroot, image_size, batch_size, workers):
@@ -35,16 +37,6 @@ def load_data(dataroot, image_size, batch_size, workers):
     )
 
     return dataloader
-
-
-# custom weights initialization called on netG and netD
-def weights_init(m):
-    classname = m.__class__.__name__
-    if classname.find('Conv') != -1:
-        nn.init.normal_(m.weight.data, 0.0, 0.02)
-    elif classname.find('BatchNorm') != -1:
-        nn.init.normal_(m.weight.data, 1.0, 0.02)
-        nn.init.constant_(m.bias.data, 0)
 
 
 def main():
@@ -106,6 +98,7 @@ def main():
     img_list = []
     iters = 0
     for epoch in range(num_epochs):
+        begin = time.time()
         netG.train()
         netD.train()
         # For each batch in the dataloader
@@ -178,7 +171,9 @@ def main():
 
         filename = exp / f"generator-{epoch}.pt"
         torch.save(netG.state_dict(), str(filename))
+        end = time.time()
         print("saved generator to", filename)
+        print("epoch took", end - begin, "seconds")
 
 
 if __name__=="__main__":

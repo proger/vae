@@ -1,3 +1,6 @@
 data/
 *.pt
 *.pdf
+*.png
+wandb/
+__pycache__/

@@ -1,27 +1,19 @@
-import wandb
+from pathlib import Path
 
 import torch.nn as nn
 import torch.utils.data
 import torchvision.utils as vutils
+import wandb
 
 from va.celeba.encoder import Encoder
 from va.celeba.generator import Generator
-
-
-# custom weights initialization called on netG and netD
-def weights_init(m):
-    classname = m.__class__.__name__
-    if classname.find('Conv') != -1:
-        nn.init.normal_(m.weight.data, 0.0, 0.02)
-    elif classname.find('BatchNorm') != -1:
-        nn.init.normal_(m.weight.data, 1.0, 0.02)
-        nn.init.constant_(m.bias.data, 0)
+from va.celeba.utils import weights_init
 
 
 def main():
     wandb.init()
     generator_path = "exp/dcgan/generator-44.pt"
-    encoder_check_dir = "exp/dcgan-encoder/"
+    exp = Path("exp/dcgan-encoder/")
 
     nz = 100
     ngf = 64
@@ -80,7 +72,7 @@ def main():
         stats = {"loss": loss.item(), "z_means": z_means, "zz_means": zz_means, "acc_loss": acc_loss, "eentr": eentr}
 
         if epoch % 10000 == 0:
-            filename = encoder_check_dir + "encoder-" +str(epoch) + ".pt"
+            filename = exp / f"encoder-{epoch}.pt"
             torch.save(encoder.state_dict(), filename)
             print("saved encoder to", filename)
 

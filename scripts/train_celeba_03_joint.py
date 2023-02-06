@@ -1,8 +1,8 @@
-import wandb
+from pathlib import Path
 
-import torch.nn as nn
 import torch.utils.data
 import torchvision.utils as vutils
+import wandb
 
 from va.celeba.encoder import Encoder
 from va.celeba.generator import Generator
@@ -17,7 +17,8 @@ def main():
     wandb.init()
     generator_path = "exp/dcgan/generator-44.pt"
     encoder_path = "exp/dcgan-encoder/encoder-990000.pt"
-    vae_check_dir = "exp/dcgan-vae/"  
+    exp = Path("exp/dcgan-vae/")
+    exp.mkdir(parents=True, exist_ok=True)
     
     nz = 100
     ngf = 64
@@ -35,12 +36,12 @@ def main():
     }
 
     # Create Decoder
-    decoder_gt = Generator(nz, ngf, nc, learn_sigma=True).to(device)
+    decoder_gt = Generator(nz, ngf, nc).to(device)
     decoder_gt.load_state_dict(torch.load(generator_path))
     wandb.watch(decoder_gt)
     print(decoder_gt)
 
-    decoder = Generator(nz, ngf, nc, learn_sigma=True).to(device)
+    decoder = Generator(nz, ngf, nc).to(device)
     wandb.watch(decoder)
     decoder.load_state_dict(torch.load(generator_path))
     print(decoder)
@@ -48,7 +49,6 @@ def main():
     # Create Encoder
     encoder = Encoder(nz, ndf, nc).to(device)
     wandb.watch(encoder)
-    # wandb.watch(encoder)
     encoder.load_state_dict(torch.load(encoder_path))
     print(encoder)
 
@@ -56,7 +56,6 @@ def main():
     elbo = 0
     z_means = torch.zeros([nz], device=device)
     zz_means = torch.ones([nz], device=device)
-    eentr = 94.2 # from log of the previous experiment
 
     img_list = []
     for epoch in range(num_epoches):
@@ -87,12 +86,11 @@ def main():
         # accumulate 
         z_means = z_means*0.999 + z.mean([0,2,3]).detach()*0.001
         zz_means = zz_means*0.999 + (z*z).mean([0,2,3]).detach()*0.001
-        eentr = eentr*0.999 + (141.89 + torch.log(z_sigma).detach().sum([1,2,3]).mean())*0.001
-        stats = {"elbo": elbo.item(), "z_means": z_means, "zz_means": zz_means, "eentr": eentr}
+        stats = {"elbo": elbo.item(), "z_means": z_means, "zz_means": zz_means}
 
         if epoch % 10000 == 0:
-            file_encoder = vae_check_dir + "encoder-" + str(epoch) + ".pt"
-            file_decoder = vae_check_dir + "decoder-" + str(epoch) + ".pt"
+            file_encoder = exp / f"encoder-{epoch}.pt"
+            file_decoder = exp / f"decoder-{epoch}.pt"
             torch.save(encoder.state_dict(), file_encoder)
             torch.save(decoder.state_dict(), file_decoder)
             print("saved encoder to", file_encoder)
