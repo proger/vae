@@ -27,11 +27,13 @@ When trained jointly, the decoder is sacrificing its reconstruction ability to a
 python ./scripts/train_gmm.py
 ```
 
+This script generates plots as it goes along, check it out!
+
 ## Semantic Hashing
 
-This experiment trains a Bernoulli VAE on a Semantic Hashing task on the 20 Newsgroups dataset. This model encodes text into a binary code that can be used for search.
+This experiment trains a VAE with Bernoulli latent variables on a Semantic Hashing task on the 20 Newsgroups dataset. This model encodes text into a binary code that can be used for search. The best model with DisARM gradient estimator achieves negative ELBO of 387, improving original work.
 
-To reproduce the model using word counts as inputs with the best hyperparameters (64 bits latent code), run:
+To reproduce the model using word counts as inputs with the best hyperparameters (including 64 bits latent code), run:
 
 ```
 python ./scripts/train_semhash.py semhash.pt
@@ -43,54 +45,13 @@ To train on frequencies as inputs, run:
 python ./scripts/train_semhash.py --frequencies
 ```
 
+[scripts/train_semhash_all.sh](scripts/train_semhash_all.sh) reproduces experiments with all hyperparameters in sequence.
 
-The following list of commands reproduces all experiments:
-
-```
-python ./scripts/train_semhash.py --decoder_hidden_features 512 --latent_features 16 semhash_e1_bits16_dhidden1.pt
-python ./scripts/train_semhash.py --decoder_hidden_features 512 --latent_features 32 semhash_e1_bits32_dhidden1.pt
-python ./scripts/train_semhash.py --decoder_hidden_features 512 --latent_features 64 semhash_e1_bits64_dhidden1.pt
-python ./scripts/train_semhash.py --decoder_hidden_features 512 --latent_features 8 semhash_e1_bits8_dhidden1.pt
-python ./scripts/train_semhash.py --decoder_hidden_features 512 512 --latent_features 16 semhash_e1_bits16_dhidden2.pt
-python ./scripts/train_semhash.py --decoder_hidden_features 512 512 --latent_features 32 semhash_e1_bits32_dhidden2.pt
-python ./scripts/train_semhash.py --decoder_hidden_features 512 512 --latent_features 64 semhash_e1_bits64_dhidden2.pt
-python ./scripts/train_semhash.py --decoder_hidden_features 512 512 --latent_features 8 semhash_e1_bits8_dhidden2.pt
-python ./scripts/train_semhash.py --latent_features 16 semhash_e1_bits16_dhidden0.pt
-python ./scripts/train_semhash.py --latent_features 32 semhash_e1_bits32_dhidden0.pt
-python ./scripts/train_semhash.py --latent_features 64 semhash_e1_bits64_dhidden0.pt
-python ./scripts/train_semhash.py --latent_features 8 semhash_e1_bits8_dhidden0.pt
-
-python ./scripts/train_semhash.py --frequencies --encoder_hidden_features 512 --decoder_hidden_features 512 --latent_features 16 semhash_e2_bits16_dhidden1.pt
-python ./scripts/train_semhash.py --frequencies --encoder_hidden_features 512 --decoder_hidden_features 512 --latent_features 32 semhash_e2_bits32_dhidden1.pt
-python ./scripts/train_semhash.py --frequencies --encoder_hidden_features 512 --decoder_hidden_features 512 --latent_features 64 semhash_e2_bits64_dhidden1.pt
-python ./scripts/train_semhash.py --frequencies --encoder_hidden_features 512 --decoder_hidden_features 512 --latent_features 8 semhash_e2_bits8_dhidden1.pt
-python ./scripts/train_semhash.py --frequencies --encoder_hidden_features 512 --decoder_hidden_features 512 512 --latent_features 16 semhash_e2_bits16_dhidden2.pt
-python ./scripts/train_semhash.py --frequencies --encoder_hidden_features 512 --decoder_hidden_features 512 512 --latent_features 32 semhash_e2_bits32_dhidden2.pt
-python ./scripts/train_semhash.py --frequencies --encoder_hidden_features 512 --decoder_hidden_features 512 512 --latent_features 64 semhash_e2_bits64_dhidden2.pt
-python ./scripts/train_semhash.py --frequencies --encoder_hidden_features 512 --decoder_hidden_features 512 512 --latent_features 8 semhash_e2_bits8_dhidden2.pt
-python ./scripts/train_semhash.py --frequencies --encoder_hidden_features 512 --latent_features 16 semhash_e2_bits16_dhidden0.pt
-python ./scripts/train_semhash.py --frequencies --encoder_hidden_features 512 --latent_features 32 semhash_e2_bits32_dhidden0.pt
-python ./scripts/train_semhash.py --frequencies --encoder_hidden_features 512 --latent_features 64 semhash_e2_bits64_dhidden0.pt
-python ./scripts/train_semhash.py --frequencies --encoder_hidden_features 512 --latent_features 8 semhash_e2_bits8_dhidden0.pt
-
-python ./scripts/train_semhash.py --frequencies --decoder_hidden_features 512 --latent_features 16 semhash_e3_bits16_dhidden1.pt
-python ./scripts/train_semhash.py --frequencies --decoder_hidden_features 512 --latent_features 32 semhash_e3_bits32_dhidden1.pt
-python ./scripts/train_semhash.py --frequencies --decoder_hidden_features 512 --latent_features 64 semhash_e3_bits64_dhidden1.pt
-python ./scripts/train_semhash.py --frequencies --decoder_hidden_features 512 --latent_features 8 semhash_e3_bits8_dhidden1.pt
-python ./scripts/train_semhash.py --frequencies --decoder_hidden_features 512 512 --latent_features 16 semhash_e3_bits16_dhidden2.pt
-python ./scripts/train_semhash.py --frequencies --decoder_hidden_features 512 512 --latent_features 32 semhash_e3_bits32_dhidden2.pt
-python ./scripts/train_semhash.py --frequencies --decoder_hidden_features 512 512 --latent_features 64 semhash_e3_bits64_dhidden2.pt
-python ./scripts/train_semhash.py --frequencies --decoder_hidden_features 512 512 --latent_features 8 semhash_e3_bits8_dhidden2.pt
-python ./scripts/train_semhash.py --frequencies --latent_features 16 semhash_e3_bits16_dhidden0.pt
-python ./scripts/train_semhash.py --frequencies --latent_features 32 semhash_e3_bits32_dhidden0.pt
-python ./scripts/train_semhash.py --frequencies --latent_features 64 semhash_e3_bits64_dhidden0.pt
-python ./scripts/train_semhash.py --frequencies --latent_features 8 semhash_e3_bits8_dhidden0.pt
-```
 
 
 ## CelebA
 
-Here we pretrain a GAN as a ground truth decoder, pretrain encoder using conditional likelihood
+Here we pretrain a GAN as a ground truth decoder, pretrain encoder using conditional likelihood and then train a VAE end-to-end, seeing ELBO improve but reconstruction quality gets worse as witnessed by FID.
 
 This experiment is based on [DCGAN TUTORIAL](https://pytorch.org/tutorials/beginner/dcgan_faces_tutorial.html).
 
