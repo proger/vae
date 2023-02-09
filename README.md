@@ -2,7 +2,14 @@
 
 We successfully reproduce experiments from ICLR2022 paper [VAE Approximation Error: ELBO and Exponential Families](https://openreview.net/forum?id=OIs3SxU5Ynl) by Alexander Shekhovtsov, Dmitrij Schlesinger and Boris Flach.
 
+> Variational Autoencoders fail to capture the data distribution when the encoder distribution is inflexible. When an inflexible encoder is trained jointly with a decoder using ELBO objective, the inability of the encoder to represent the posterior propagates into the decoder, causing approximation errors.
+
+> We reproduce two experiments in which we separately prepare the ground truth decoder and the encoder. Then, we maximize ELBO with respect to both modules jointly and observe degradation of reconstruction performance.
+
+> We also verify how the theoretical insight into the design of a discrete VAE in a Semantic Hashing application influences the choice of input features improving overall performance.
+
 Below we include our reproduction code.
+
 
 ## Prerequisites
 
