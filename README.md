@@ -1,5 +1,9 @@
 # [Re] VAE Approximation Error: ELBO and Exponential Families
 
+We successfully reproduce experiments from ICLR2022 paper [VAE Approximation Error: ELBO and Exponential Families](https://openreview.net/forum?id=OIs3SxU5Ynl) by Alexander Shekhovtsov, Dmitrij Schlesinger and Boris Flach.
+
+Below we include our reproduction code.
+
 ## Prerequisites
 
 This Python project uses [hatch](https://hatch.pypa.io/latest/intro/) to manage the `va` package.
@@ -16,7 +20,7 @@ To create a virtual environment, you may use `hatch shell`.
 
 ## Gaussian Mixtures
 
-This experiment demonstrates a VAE with a factorized encoder with not limited representation power.
+This experiment demonstrates a VAE with a factorized encoder with limited representation power.
 When trained jointly, the decoder is sacrificing its reconstruction ability to adapt to the encoder.
 
 ```
@@ -25,11 +29,18 @@ python ./scripts/train_gmm.py
 
 ## Semantic Hashing
 
-This experiment trains a Bernoulli VAE on a Semantic Hashing task on the 20 Newsgroups dataset.
-To reproduce the model with the best hyperparameters, run:
+This experiment trains a Bernoulli VAE on a Semantic Hashing task on the 20 Newsgroups dataset. This model encodes text into a binary code that can be used for search.
+
+To reproduce the model using word counts as inputs with the best hyperparameters (64 bits latent code), run:
 
 ```
 python ./scripts/train_semhash.py semhash.pt
+```
+
+To train on frequencies as inputs, run:
+
+```
+python ./scripts/train_semhash.py --frequencies
 ```
 
 
@@ -78,6 +89,8 @@ python ./scripts/train_semhash.py --frequencies --latent_features 8 semhash_e3_b
 
 
 ## CelebA
+
+Here we pretrain a GAN as a ground truth decoder, pretrain encoder using conditional likelihood
 
 This experiment is based on [DCGAN TUTORIAL](https://pytorch.org/tutorials/beginner/dcgan_faces_tutorial.html).
 
