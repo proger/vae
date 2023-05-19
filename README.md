@@ -10,7 +10,7 @@ We successfully reproduce experiments from ICLR2022 paper [VAE Approximation Err
 
 > We also verify how the theoretical insight into the design of a discrete VAE in a Semantic Hashing application influences the choice of input features improving overall performance.
 
-Below we include our reproduction code.
+In this repository we include our reproduction code for Gaussian Mixtures and Semantic Hashing experiments. CelebA code is a modification of the training code provided kindly provided to us by Dmitrij Schlesinger, which is in turn based on the [DCGAN Tutorial](https://pytorch.org/tutorials/beginner/dcgan_faces_tutorial.html).
 
 
 ## Prerequisites
