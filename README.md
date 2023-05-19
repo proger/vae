@@ -1,5 +1,7 @@
 # [Re] VAE Approximation Error: ELBO and Exponential Families
 
+[![DOI](https://zenodo.org/badge/570906559.svg)](https://zenodo.org/badge/latestdoi/570906559)
+
 We successfully reproduce experiments from ICLR2022 paper [VAE Approximation Error: ELBO and Exponential Families](https://openreview.net/forum?id=OIs3SxU5Ynl) by Alexander Shekhovtsov, Dmitrij Schlesinger and Boris Flach.
 
 > Variational Autoencoders fail to capture the data distribution when the encoder distribution is inflexible. When an inflexible encoder is trained jointly with a decoder using ELBO objective, the inability of the encoder to represent the posterior propagates into the decoder, causing approximation errors.
