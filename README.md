@@ -1,6 +1,6 @@
 # [Re] VAE Approximation Error: ELBO and Exponential Families
 
-[![DOI](https://zenodo.org/badge/570906559.svg)](https://zenodo.org/badge/latestdoi/570906559)
+[![DOI](https://zenodo.org/badge/570906559.svg)](https://zenodo.org/badge/latestdoi/570906559).
 
 We successfully reproduce experiments from ICLR2022 paper [VAE Approximation Error: ELBO and Exponential Families](https://openreview.net/forum?id=OIs3SxU5Ynl) by Alexander Shekhovtsov, Dmitrij Schlesinger and Boris Flach.
 
