@@ -12,6 +12,23 @@ We successfully reproduce experiments from ICLR2022 paper [VAE Approximation Err
 
 In this repository we include our reproduction code for Gaussian Mixtures and Semantic Hashing experiments. CelebA code is a modification of the training code provided kindly provided to us by Dmitrij Schlesinger, which is in turn based on the [DCGAN Tutorial](https://pytorch.org/tutorials/beginner/dcgan_faces_tutorial.html).
 
+If you find our reproduction useful please cite:
+
+```
+@article{re-vae-approximation-errors,
+  author       = {Volodymyr Kyrylov and
+                  Navdeep Singh Bedi and
+                  Qianbo Zang},
+  title        = {{[Re] VAE Approximation Error: ELBO and Exponential 
+                   Families}},
+  journal      = {ReScience C},
+  year         = 2023,
+  volume       = 9,
+  number       = 2,
+  doi          = {10.5281/zenodo.8173745},
+  url          = {https://doi.org/10.5281/zenodo.8173745}
+}
+```
 
 ## Prerequisites
 
